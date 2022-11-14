@@ -1,19 +1,18 @@
 import './css/styles.css';
-import fetchCountries from './api-servise'
+import fetchCountries from './api-servise';
 import debounce from 'lodash.debounce';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import "notiflix/dist/notiflix-3.2.5.min.css"
+import "notiflix/dist/notiflix-3.2.5.min.css";
 
 const DEBOUNCE_DELAY = 300;
 const refs = {
     input: document.querySelector('#search-box'),
     list: document.querySelector('.country-list'),
     info: document.querySelector('.country-info'),
-}
- console.log(refs.list)
+};
+
 
 refs.input.addEventListener('input',debounce(inInput, DEBOUNCE_DELAY) );
-
 function inInput(e) {
     let name = e.target.value.trim();
     if (name) {
@@ -22,11 +21,13 @@ function inInput(e) {
         refs.list.innerHTML = ' ';
     };
 
-}
+};
+
+
 function createMarkup(data) {
     console.log(data)
     if (data.length === 1) {
-        let coutrieLanguages = data.map(({ languages }) => languages.flatMap((language) => language.name).join(','));
+        let coutrieLanguages = data.map(({ languages }) => languages.flatMap((language) => language.name).join(', '));
         console.log(coutrieLanguages);
         const markupCountrieInfo = data.map(({flags, name, capital, population, languages}) => `
         <li class = "country-list__item">
@@ -51,11 +52,15 @@ function createMarkup(data) {
     }
     
 };
+
+
 function onErorr() {
     refs.info.innerHTML = ' ';
     refs.list.innerHTML = ' ';
     Notify.failure('Oops, there is no country with that name');
-}
+};
+
+
 function chekLengthOfArray(data) {
     if (data.length >= 10) {
         refs.list.innerHTML = ' ';
