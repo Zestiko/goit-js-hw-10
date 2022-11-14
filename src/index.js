@@ -16,64 +16,52 @@ refs.input.addEventListener('input',debounce(inInput, DEBOUNCE_DELAY) );
 
 function inInput(e) {
     let name = e.target.value.trim();
-    console.log(Boolean(name));
-   if (name) {
-       fetchCountries(name).then(data => {
-        //    if (data.length >= 10) {
-        //        createMarkup(data);
-        //        refs.list.innerHTML = ' ';
-        //        Notify.info('Too many matches found. Please enter a more specific name.');
-        //    }
-        if (data.length >= 10) {
-            refs.list.innerHTML = ' ';
-           Notify.info('Too many matches found. Please enter a more specific name.');
-        } else {
-            createMarkup(data);
-        }
-       }).catch(eroro => {
-           console.log(eroro)
-           refs.info.innerHTML = ' ';
-           refs.list.innerHTML = ' ';
-           Notify.failure('Oops, there is no country with that name');
-    });
-    
-   } else {
-       refs.list.innerHTML = ' ';
-       
-   }
+    if (name) {
+        fetchCountries(name).then(chekLengthOfArray).catch(onErorr);  
+    } else {
+        refs.list.innerHTML = ' ';
+    };
 
 }
-
 function createMarkup(data) {
-    console.log(data.length)
+    console.log(data)
     if (data.length === 1) {
-     console.log(data)
-        const markupCountrieInfo = data.map((coutrie) => `
+        let coutrieLanguages = data.map(({ languages }) => languages.flatMap((language) => language.name).join(','));
+        console.log(coutrieLanguages);
+        const markupCountrieInfo = data.map(({flags, name, capital, population, languages}) => `
         <li class = "country-list__item">
-            <img class = "country-list__img" src = "${coutrie.flags.svg}" width="50" >
-            <p class = "country-list__article">${coutrie.name}</p>
+            <img class = "country-list__img" src = "${flags.svg}" width="50" >
+            <p class = "country-list__article"><b>${name}</b></p>
         </li>
-        <p>Capital:${coutrie.capital}</p>
-        <p>Population:${coutrie.population}</p>
-        <p>Capital:${coutrie.languages.name}</p>
+        <p><b>Capital</b>: ${capital}</p>
+        <p><b>Population</b>: ${population}</p>
+        <p><b>Language</b>: ${coutrieLanguages}</p>
         `).join('');
         refs.list.innerHTML = ' ';
         refs.info.innerHTML = markupCountrieInfo;
     } else {
-        const markupList = data.map((coutrie) => `
+        const markupList = data.map(({flags, name}) => `
         <li class = "country-list__item">
-            <img class = "country-list__img" src = "${coutrie.flags.svg}" width="50" >
-            <p class = "country-list__article">${coutrie.name}</p>
+            <img class = "country-list__img" src = "${flags.svg}" width="50" >
+            <p class = "country-list__article">${name}</p>
         </li>
         `).join('');
-        
         refs.list.innerHTML = markupList;
         refs.info.innerHTML = ' ';
-        
     }
     
+};
+function onErorr() {
+    refs.info.innerHTML = ' ';
+    refs.list.innerHTML = ' ';
+    Notify.failure('Oops, there is no country with that name');
 }
+function chekLengthOfArray(data) {
+    if (data.length >= 10) {
+        refs.list.innerHTML = ' ';
+        Notify.info('Too many matches found. Please enter a more specific name.');
+    } else {
+        createMarkup(data);
+    }
+};
 
-
-// fetchCountries(Ukraine);
-// https://restcountries.com/v2/all
