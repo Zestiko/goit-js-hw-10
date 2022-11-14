@@ -20,7 +20,7 @@ function inInput(e) {
     } else {
         refs.list.innerHTML = ' ';
     };
-
+   
 };
 
 
@@ -62,7 +62,7 @@ function onErorr() {
 
 
 function chekLengthOfArray(data) {
-    if (data.length >= 10) {
+    if (data.length >= 10 && data.length >= 2 ) {
         refs.list.innerHTML = ' ';
         Notify.info('Too many matches found. Please enter a more specific name.');
     } else {
