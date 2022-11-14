@@ -1,6 +1,8 @@
 import './css/styles.css';
 import fetchCountries from './api-servise'
 import debounce from 'lodash.debounce';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import "notiflix/dist/notiflix-3.2.5.min.css"
 
 const DEBOUNCE_DELAY = 300;
 const refs = {
@@ -16,10 +18,23 @@ function inInput(e) {
     let name = e.target.value.trim();
     console.log(Boolean(name));
    if (name) {
-       fetchCountries(name).then(createMarkup).catch(eroro => {
+       fetchCountries(name).then(data => {
+        //    if (data.length >= 10) {
+        //        createMarkup(data);
+        //        refs.list.innerHTML = ' ';
+        //        Notify.info('Too many matches found. Please enter a more specific name.');
+        //    }
+        if (data.length >= 10) {
+            refs.list.innerHTML = ' ';
+           Notify.info('Too many matches found. Please enter a more specific name.');
+        } else {
+            createMarkup(data);
+        }
+       }).catch(eroro => {
            console.log(eroro)
            refs.info.innerHTML = ' ';
            refs.list.innerHTML = ' ';
+           Notify.failure('Oops, there is no country with that name');
     });
     
    } else {
